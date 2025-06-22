@@ -20,6 +20,8 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import static org.mockito.ArgumentMatchers.any;
@@ -75,6 +77,11 @@ public class AmadeusControllersTest {
     @MockBean
     private AmadeusService amadeusService;
 
+    @Autowired
+    private ObjectMapper objectMapper;
+
+
+
     @Test
     public void testFlightOfferSearch() throws Exception {
         // 1. Load JSON file from resources
@@ -99,76 +106,64 @@ public class AmadeusControllersTest {
                 .andExpect(status().isOk())
                 .andExpect(content().json(jsonResponse)); // Directly compare JSON
     }
-}
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    @Test
+    public void testPriceFlightOfferSearch() throws Exception {
+        // Prepare mock input
+        Map<String, Object> request = new HashMap<>();
+        request.put("data", "sample-flight-offer");  // Simplified request
+
+        // Expected JSON response from service
+        String mockJsonResponse = "{\"price\":\"12000\",\"currency\":\"INR\"}";
+
+        // Mock service call
+        when(amadeusService.priceOfferFlightSearches(request)).thenReturn(mockJsonResponse);
+
+        // Perform POST request
+        mockMvc.perform(post("/v2/price-search")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isOk())
+                .andExpect(content().json(mockJsonResponse));
+
+    }
+
+
+
+
+        @Test
+        void testSearchMultiCity_success() throws Exception {
+            // Prepare request payload
+            Map<String, Object> request = Map.of(
+                    "currencyCode", "INR",
+                    "originDestinations", List.of(
+                            Map.of(
+                                    "originLocationCode", "DEL",
+                                    "destinationLocationCode", "DXB",
+                                    "date", "2025-08-01"
+                            )
+                    ),
+                    "travelers", List.of(
+                            Map.of("travelerType", "ADULT")
+                    )
+            );
+
+            // Prepare mocked response
+            String mockResponse = "{\"result\": \"Mocked Flight Offer\"}";
+
+            // Mock service call
+            when(amadeusService.searchMultiCityFlightOffers(request)).thenReturn(mockResponse);
+
+            // Call endpoint
+            mockMvc.perform(post("/v2/search-multicity")
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(objectMapper.writeValueAsString(request)))
+                    .andExpect(status().isOk())
+                    .andExpect(content().json(mockResponse));
+        }
+    }
 
 
 

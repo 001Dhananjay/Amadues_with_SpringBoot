@@ -6,12 +6,19 @@ import com.amadeus.exceptions.ResponseException;
 import com.amadeus.resources.FlightOfferSearch;
 import com.amadeus.resources.FlightPrice;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
 import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.List;
 import java.util.Map;
 
 @Service
@@ -68,6 +75,7 @@ public class AmadeusService {
 
 
 
+/*
 
     public String getAccessToken() throws Exception {
         String url = "https://test.api.amadeus.com/v1/security/oauth2/token";
@@ -107,17 +115,20 @@ public class AmadeusService {
         ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.POST, entity, String.class);
 
         return response.getBody();
+
     }
 
 
 
 
 
+*/
 /*
     public FlightPrice confirm(FlightOfferSearch offer) throws ResponseException {
         return amadeus.shopping.flightOffersSearch.pricing.post(offer);
     }
-*/
+*//*
+
 
 // https://test.api.amadeus.com/v1/shopping/flight-offers/pricing
 
@@ -139,14 +150,28 @@ public class AmadeusService {
     }
 
 
+*/
+
+//gson to json
 
 
 
 
+    private final Gson gson = new Gson();
+    public String searchMultiCityFlightOffers(Map<String, Object> flightRequest) throws Exception {
+        String requestBody = gson.toJson(flightRequest);  // Convert to JSON string
+        FlightOfferSearch[] offers = amadeus.shopping.flightOffersSearch.post(requestBody);
+        return gson.toJson(offers); // Return as JSON string, safe for response
+    }
 
 
 
-
+    public String priceOfferFlightSearches(Map<String,Object> priceRequest)throws Exception
+    {
+        String requestBody=gson.toJson(priceRequest);
+        FlightPrice  flightPrice=amadeus.shopping.flightOffersSearch.pricing.post(requestBody);
+        return gson.toJson(flightPrice);
+    }
 
 
 }

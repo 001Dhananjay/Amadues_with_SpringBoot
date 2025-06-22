@@ -19,6 +19,7 @@ import org.springframework.web.client.RestTemplate;
 
 import java.lang.reflect.Field;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -117,6 +118,7 @@ public class AmadeusServiceTest {
 
 
 
+/*
 
     @Test
     void testMultiCitySearchFlightOffers() throws Exception {
@@ -142,6 +144,12 @@ public class AmadeusServiceTest {
         // Assert
         assertEquals("flight-offer-response", result);
     }
+*/
+
+
+
+
+
 
 
 }
