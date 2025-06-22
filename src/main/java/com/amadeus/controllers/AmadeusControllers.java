@@ -76,6 +76,7 @@ public class AmadeusControllers {
 
 
 
+/*
 
     @PostMapping("/structured-search")
     @Operation(summary = "find multi city flight offer search ")
@@ -106,10 +107,12 @@ public class AmadeusControllers {
 
 
 
-    /*@PostMapping("/confirm")
+    */
+/*@PostMapping("/confirm")
     public FlightPrice confirm(@RequestBody(required=true) FlightOfferSearch search) throws ResponseException {
         return AmadeusConnect.INSTANCE.confirm(search);
-    }*/
+    }*//*
+
 
 
     @PostMapping("/confirm")
@@ -138,6 +141,50 @@ public class AmadeusControllers {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error: " + e.getMessage());
         }
     }
+*/
+
+
+
+    @PostMapping("/search-multicity")
+    @Operation(summary = "find multi city flight offer search ")
+    @ApiResponse(responseCode = "200", description = " return all available flight    [View Amadeus API Docs](https://developers.amadeus.com/self-service/category/air/api-doc/flight-offers-search/api-reference)")
+    public ResponseEntity<?> searchMultiCity(@RequestBody Map<String, Object> request) {
+        try {
+            String responseJson = amadeusService.searchMultiCityFlightOffers(request);
+            log.info("Call Amadeus Controller class and searchMultiCity method");
+
+            return ResponseEntity.ok()
+                    .header("Content-Type", "application/json")
+                    .body(responseJson);
+        } catch (Exception e) {
+
+            log.error("Error in Amadeus Controller class and searchMultiCity method ");
+
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("{\"error\": \"" + e.getMessage() + "\"}");
+        }
+    }
+
+    @PostMapping("/price-search")
+    @Operation(summary = "find price of flight offer search ")
+    @ApiResponse(responseCode = "200", description = " return all available flight price   [View Amadeus API Docs](https://developers.amadeus.com/self-service/category/flights/api-doc/flight-offers-price/api-reference)")
+    public ResponseEntity<?> priceFlightOfferSearch(@RequestBody Map<String , Object> request){
+        try {
+            String responseJson =amadeusService.priceOfferFlightSearches(request);
+
+            log.info("Call Amadeus Controller class and priceFlightOfferSearch method");
+
+            return ResponseEntity.ok()
+                    .header("Content-Type", "application/json")
+                    .body(responseJson);
+        }catch (Exception e){
+
+            log.error("Error in Amadeus Controller class and priceFlightOfferSearch method ");
+
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("{\"error\": \"" + e.getMessage() + "\"}");
+        }
+    }
+
 
 
 }
